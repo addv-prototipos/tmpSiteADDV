@@ -84,6 +84,31 @@
   `inline-flex`, `w-fit`) son las mismas que ya usaba la tarjeta original
   (que sí se había probado en mobile en segmentos anteriores) — riesgo de
   regresión mobile bajo pero no confirmado visualmente end-to-end.
+- **Cierre confirmado por Tony (2026-09-06)**: reportó el botón CTA vacío
+  (caja sin texto/color) en su navegador tras el deploy. Diagnóstico con
+  `curl` directo a `https://www.addv.mx/productos.html` y
+  `.../assets/css/tailwind.css`: HTML y CSS en producción ya tenían el
+  botón completo (texto, degradado, sombra, ícono), coincidiendo byte a
+  byte con lo publicado — no había ninguna inconsistencia servidor/deploy.
+  Causa: caché del navegador de Tony (tailwind.css tiene `Cache-Control:
+  max-age=600` en GitHub Pages) sirviendo una versión intermedia de
+  `tailwind.css` cacheada durante la ventana de 10 min mientras se hacían
+  las 2 regeneraciones seguidas de este mismo segmento. Se resolvió con
+  hard refresh (`Ctrl+Shift+R`) — sin cambios de código. **Lección para
+  segmentos futuros**: cuando se regenera `tailwind.css` más de una vez en
+  sesiones seguidas (como pasó aquí por el fix de contraste), avisar
+  explícitamente que puede quedar una versión intermedia cacheada hasta
+  10 minutos en el navegador de quien verifique, no solo en el momento del
+  primer deploy. Confirmado visualmente por Tony que el botón ya se ve
+  igual al mockup aprobado — **segmento cerrado**.
+- **DNS de `clarvo.mx` verificado en vivo (2026-09-06)**, confirmando lo
+  que `clarvo-tempSite/project_state.md` (Segmento 5) dejaba como
+  pendiente del usuario: `clarvo.mx` resuelve a las 4 IPs de GitHub Pages,
+  `www.clarvo.mx` resuelve por CNAME a `addv-sites.github.io`,
+  `https://clarvo.mx` responde 200 OK con certificado HTTPS ya
+  aprovisionado (Let's Encrypt vía GitHub Pages), y `http://` redirige
+  301 a HTTPS. El link de la tarjeta CLARVO apunta a un dominio real y
+  operativo, no a un placeholder.
 
 Última actualización anterior: **Auditoría UX/SEO/Neuroventas — sesión pausada, retomar aquí (2026-08-10)**
 
