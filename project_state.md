@@ -1,6 +1,91 @@
 # project_state.md — Sitio ADDV (addv.mx)
 
-Última actualización: **Auditoría UX/SEO/Neuroventas — sesión pausada, retomar aquí (2026-08-10)**
+Última actualización: **Tarjeta de producto "Portal de Facturación" → CLARVO, con redirección a clarvo.mx (2026-09-05)**
+
+- **Contexto**: CLARVO (antes "Portal de Facturación") ya tiene sitio propio
+  en vivo (`clarvo.mx`, proyecto separado `D:\srv\clarvo-tempSite`, repo git
+  independiente). Tony pidió que la tarjeta de `productos.html` deje de ser
+  un placeholder "Próximamente" con CTA a WhatsApp, y en su lugar redirija a
+  `https://clarvo.mx`, use el copy real de `D:\srv\clarvo-tempSite\market.md`
+  y el logo real (diamante-V), aplicando técnicas de UX/neuroventas para
+  atraer la atención.
+- **Propuesta visual antes/después mostrada y aprobada** (protocolo
+  `addv-web-app`, paso 4) antes de tocar código — mockup en Artifact con las
+  2 tarjetas del grid, comparando estado actual vs. propuesto. 3 decisiones
+  confirmadas explícitamente por Tony vía pregunta directa: badge
+  "Producto ADDV · Descúbrelo en clarvo.mx" (no "Ya disponible" ni "Próximo
+  lanzamiento" — evita sobre-prometer que la app de facturación completa ya
+  está lista, cuando `clarvo-tempSite` sigue siendo landing provisional);
+  subir el logo real a `assets/images/`; CTA en pestaña nueva.
+- **Implementado en `productos.html`** (única página tocada — el resto del
+  sitio, y el proyecto `clarvo-tempSite`, no se modificaron):
+  - Ícono: `assets/images/logo-clarvo.png` (nuevo, 256×256, 36 KB) — recorte
+    del diamante-V real (`favicon2.png` que dio Tony, bbox ajustado + 6% de
+    padding transparente vía Pillow) sobre un cuadro con degradado
+    `linear-gradient(135deg,#0a5cff,#22d3ee)` (paleta real de marca CLARVO,
+    no la paleta navy de ADDV) — reemplaza el ícono genérico
+    `receipt_long` de Material Symbols. Barra de acento del mismo degradado
+    en el borde superior de la tarjeta (`absolute h-[3px]`) — único elemento
+    visual que distingue esta tarjeta de la de ADDV Fintech en el grid
+    (pattern interrupt intencional, ver mockup).
+  - Badge: "Producto ADDV · Descúbrelo en clarvo.mx" (antes "· Próximamente"),
+    mismo patrón de pastilla que ya usaba, con degradado de marca al 14% de
+    opacidad como fondo.
+  - Copy (gancho de dolor, adaptado de `market.md`, sección "El dolor real"
+    y "frases gancho"): *"¿Sabes cuánto ganaste este mes? CLARVO sí. Deja
+    el Excel, la libreta y las facturas a las carreras el día 17: factura,
+    cobra lo que te deben y controla tu inventario desde un solo tablero —
+    con tu marca, no la nuestra."* Reemplaza el copy anterior centrado en
+    "no sustituye el timbrado CFDI de tu contador" (ese matiz seguía siendo
+    cierto pero ya no es el mensaje principal — ahora vive implícito en que
+    CLARVO es "control", no "un timbrador").
+  - Título: "Portal de Facturación" → "CLARVO".
+  - CTA: "Sé el primero en probarlo" (WhatsApp con mensaje precargado) →
+    "Descúbrelo en clarvo.mx" (`<a href="https://clarvo.mx" target="_blank"
+    rel="noopener noreferrer">`, ícono `open_in_new` en vez de
+    `arrow_forward` — señala explícitamente que abre un sitio externo).
+    Menor fricción que el flujo de WhatsApp anterior porque el producto ya
+    tiene sitio propio navegable.
+  - Meta description/OG/Twitter de `productos.html` (3 apariciones idénticas)
+    actualizadas de "Portal de Facturación y ADDV Fintech" a "CLARVO
+    (control financiero y facturación) y ADDV Fintech".
+  - `README.md`: árbol de archivos actualizado ("Portal de Facturación" →
+    "CLARVO").
+  - **Cero cambios en `clarvo-tempSite`** — ese proyecto ya estaba
+    entregado y en vivo, fuera del alcance de este segmento.
+- **Contraste AA verificado programáticamente (fórmula WCAG) antes de dar
+  el segmento por cerrado** — encontró y corrigió 2 fallos reales que el
+  mockup visual no había expuesto a simple vista:
+  - Texto del badge (`#0a5cff` sobre el degradado al 14% de opacidad) daba
+    solo 4.28:1 en el extremo azul — bajo el 4.5:1 requerido. Cambiado a
+    `text-secondary` (`#0058be`, token ya existente del sistema de diseño,
+    usado en otros textos del sitio) → 5.44:1 mínimo.
+  - Texto blanco del botón CTA sobre el degradado `#0a5cff→#0091d1` daba
+    solo 3.52:1 en el extremo claro — también bajo AA. Endpoints del
+    degradado oscurecidos a `#0a56ff→#0077b6` → 4.87:1 mínimo, sin cambiar
+    la identidad visual de marca (sigue leyéndose azul→cian).
+- **`assets/css/tailwind.css` regenerado dos veces** (proceso documentado en
+  `build/tailwind/README.md`, Tailwind CLI temporal en `build/tailwind`,
+  sin tocar `node_modules` del repo) — la tarjeta usa clases arbitrarias
+  nuevas (`bg-[linear-gradient(...)]`, sombra de color de marca) que no
+  existían en el CSS compilado anterior. La segunda regeneración fue por
+  el fix de contraste del CTA (endpoints de degradado cambiados después de
+  la primera regeneración).
+- **Verificado**: `node --check` en los 4 módulos JS (sin cambios, sigue
+  sin errores), los 2 bloques JSON-LD de `productos.html` parsean
+  correctamente (`JSON.parse`), QA visual real en Chrome contra
+  `http://localhost:8123` (servidor local) — grid de 2 columnas intacto,
+  tarjeta de ADDV Fintech sin regresión, badge/CTA legibles tras el fix de
+  contraste. **Limitación de esta verificación**: la herramienta de
+  redimensionar ventana del navegador no achicó el viewport real en este
+  entorno (quedó en ~1440px pese a pedir 390px) — no se pudo capturar un
+  screenshot real en mobile. Se verificó en su lugar que las clases
+  estructurales de layout (`grid-cols-1 md:grid-cols-2`, `flex`,
+  `inline-flex`, `w-fit`) son las mismas que ya usaba la tarjeta original
+  (que sí se había probado en mobile en segmentos anteriores) — riesgo de
+  regresión mobile bajo pero no confirmado visualmente end-to-end.
+
+Última actualización anterior: **Auditoría UX/SEO/Neuroventas — sesión pausada, retomar aquí (2026-08-10)**
 
 - **ESTADO AL PAUSAR (actualizado 2026-08-11)**: de los 10 bloques de la
   auditoría (A–J), **A, B, C, I, H, D, G ya están escritos en los archivos y

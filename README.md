@@ -53,7 +53,7 @@ python3 -m http.server 8000
 ├── nosotros.html         Nosotros (propósito, pilares de marca)
 ├── contacto.html         Contacto (formulario → WhatsApp, sin backend)
 ├── servicios.html        Servicios (7 servicios con detalle y bullets)
-├── productos.html        Productos (Portal de Facturación, ADDV Fintech)
+├── productos.html        Productos (CLARVO, ADDV Fintech)
 ├── casos-exito.html      Casos de éxito (clientes reales + ejemplos)
 │                         (las 6 páginas del sitio ya existen)
 ├── assets/

@@ -106,6 +106,15 @@ archivo actualizados al cerrar cada segmento.
   class="material-symbols-outlined">`) para iconos genéricos de UI; el
   ícono de WhatsApp del botón flotante se conserva como SVG inline propio
   por reconocibilidad de marca.
+- **`assets/images/logo-clarvo.png`** (2026-09-05): diamante-V de la marca
+  CLARVO (producto propio de ADDV con sitio externo en `clarvo.mx`, ver
+  `productos.html`), recorte del PNG original entregado por Tony con
+  bbox ajustado + 6% de padding transparente, 256×256, 36 KB. Único uso:
+  ícono de la tarjeta CLARVO en `productos.html`, sobre fondo con
+  degradado propio de esa marca (`#0a5cff`→`#22d3ee`), distinto de la
+  paleta navy del resto del sitio — intencional, para diferenciar
+  visualmente un producto con identidad de marca propia dentro del
+  catálogo de ADDV.
 - El sitio usa ~40 fotos de stock externas (`lh3.googleusercontent.com`,
   URLs de los mockups de Stitch) en tarjetas de servicios/productos, etc.
   — decisión explícita de Tony (antes el sitio era 100% SVG inline, cero
